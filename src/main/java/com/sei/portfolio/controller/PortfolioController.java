@@ -4,6 +4,7 @@ import com.sei.portfolio.dto.PortfolioRequestDTO;
 import com.sei.portfolio.model.Portfolio;
 import com.sei.portfolio.service.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +17,8 @@ public class PortfolioController {
     private PortfolioService portfolioService;
 
     @PostMapping
-    public Portfolio createPortfolio(@RequestBody PortfolioRequestDTO dto) {
-        return portfolioService.createPortfolio(dto);
+    public List<Portfolio> createPortfolio(@RequestBody List<PortfolioRequestDTO> dtos) {
+        return portfolioService.createPortfolio(dtos);
     }
 
     @GetMapping
@@ -39,6 +40,11 @@ public class PortfolioController {
     @DeleteMapping("/{id}")
     public Portfolio deleteById(@PathVariable Long id) {
         return portfolioService.deletePortfolioById(id);
+    }
+    @GetMapping("/portfolios/count")
+    public ResponseEntity<Long> getPortfolioCount() {
+        long count = portfolioService.getPortfolioCount();
+        return ResponseEntity.ok(count);
     }
 
 
