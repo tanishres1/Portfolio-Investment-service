@@ -54,7 +54,7 @@ public class PortfolioService {
         Portfolio portfolio = portfolioRepository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("Portfolio not found with id " + dto.getId()));
         // Update portfolio name
         portfolio.setName(dto.getName());
-        System.out.println("Updated name to "+dto.getName());
+        System.out.println("Updated name to " + dto.getName());
         // Create new Investment and set values
         Investment investment = new Investment();
         investment.setName(dto.getInvestmentName()); // ✅ THIS IS IMPORTANT
@@ -62,25 +62,30 @@ public class PortfolioService {
         investment.setPortfolio(portfolio);
         // Add to existing investments
         portfolio.getInvestments().add(investment);
-        Portfolio updated=portfolioRepository.save(portfolio);
-        System.out.println("Portfolio updated with new Investment name"+investment.getName());
+        Portfolio updated = portfolioRepository.save(portfolio);
+        System.out.println("Portfolio updated with new Investment name" + investment.getName());
         return updated;
     }
 
     public Portfolio getByPortfolioById(Long id) {
-        System.out.println("get PortfolioById called for Id"+id);
+        System.out.println("get PortfolioById called for Id" + id);
         return portfolioRepository.findById(id).orElseThrow(() -> new RuntimeException("Portfolio id not found: " + id));
     }
 
     public Portfolio deletePortfolioById(Long id) {
-        System.out.println("Delete PortfolioById called for id:"+id);
-        Portfolio portfolio = portfolioRepository.findById(id).orElseThrow(() -> new RuntimeException("Portfolio not found with id: " + id));
-        portfolioRepository.deleteById(id);
-        return portfolio; // or return a message/DTO
+        System.out.println("Delete PortfolioById called for id:" + id);
+
+        Portfolio portfolio = portfolioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Portfolio not found with id: " + id));
+
+        portfolioRepository.deleteById(id);  // ✅ Actual deletion
+
+        return portfolio;
     }
 
+
     public long getPortfolioCount() {
-        Long count= portfolioRepository.count();
+        Long count = portfolioRepository.count();
         System.out.println("📊 Total portfolio count: " + count);
         return count;
     }
