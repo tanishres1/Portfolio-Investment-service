@@ -18,9 +18,11 @@ public class PortfolioService {
     private PortfolioRepository portfolioRepository;
 
     public List<Portfolio> createPortfolio(List<PortfolioRequestDTO> dtos) {
+        System.out.println("create a portfolio called with input size" + dtos.size());
         List<Portfolio> portfolios = new ArrayList<>();
 
         for (PortfolioRequestDTO dto : dtos) {
+            System.out.println("creating portfolio" + dto.getName());
             Portfolio portfolio = new Portfolio();
             portfolio.setName(dto.getName());
 
@@ -33,22 +35,26 @@ public class PortfolioService {
             portfolios.add(portfolio);
         }
         // ✅ Save all portfolios after the loop
-        return portfolioRepository.saveAll(portfolios);
+        List<Portfolio> saved = portfolioRepository.saveAll(portfolios);
+        System.out.println("saved" + saved.size() + "portfolio db");
+        return saved;
+
     }
 
 
     // Get List of Portfolio
     public List<Portfolio> getAllPortfolios() {
-
+        System.out.println("▶️ getAllPortfolios() called");
         return portfolioRepository.findAll();
+
     }
 
     public Portfolio updatePortfolio(PortfolioRequestDTO dto) {
+        System.out.println("▶️ updatePortfolio() called for ID: " + dto.getId());
         Portfolio portfolio = portfolioRepository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("Portfolio not found with id " + dto.getId()));
-
         // Update portfolio name
         portfolio.setName(dto.getName());
-
+        System.out.println("Updated name to "+dto.getName());
         // Create new Investment and set values
         Investment investment = new Investment();
         investment.setName(dto.getInvestmentName()); // ✅ THIS IS IMPORTANT
@@ -56,22 +62,28 @@ public class PortfolioService {
         investment.setPortfolio(portfolio);
         // Add to existing investments
         portfolio.getInvestments().add(investment);
-        return portfolioRepository.save(portfolio);
+        Portfolio updated=portfolioRepository.save(portfolio);
+        System.out.println("Portfolio updated with new Investment name"+investment.getName());
+        return updated;
     }
 
     public Portfolio getByPortfolioById(Long id) {
+        System.out.println("get PortfolioById called for Id"+id);
         return portfolioRepository.findById(id).orElseThrow(() -> new RuntimeException("Portfolio id not found: " + id));
     }
 
     public Portfolio deletePortfolioById(Long id) {
+        System.out.println("Delete PortfolioById called for id:"+id);
         Portfolio portfolio = portfolioRepository.findById(id).orElseThrow(() -> new RuntimeException("Portfolio not found with id: " + id));
         portfolioRepository.deleteById(id);
         return portfolio; // or return a message/DTO
     }
-    public long getPortfolioCount() {
-        return portfolioRepository.count();
-    }
 
+    public long getPortfolioCount() {
+        Long count= portfolioRepository.count();
+        System.out.println("📊 Total portfolio count: " + count);
+        return count;
+    }
 
 
 }
